@@ -3,16 +3,16 @@ import React, { useState } from 'react';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isLogin, setIsLogin] = useState(true); // State to toggle between Login and Sign Up
-  const [isForgotPassword, setIsForgotPassword] = useState(false); // State to toggle Forgot Password view
+  const [isLogin, setIsLogin] = useState(true); 
+  const [isForgotPassword, setIsForgotPassword] = useState(false); 
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (isForgotPassword) {
-      // Handle Forgot Password
+     
       console.log('Reset password email sent to:', email);
     } else {
-      // Handle Login or Sign Up based on isLogin
+      
       console.log(isLogin ? 'Logging in with' : 'Signing up with', 'Email:', email, 'Password:', password);
     }
   };
@@ -25,7 +25,7 @@ const Login = () => {
       >
         <h2 className="text-2xl font-bold mb-6 text-center">{isForgotPassword ? 'Reset Password' : isLogin ? 'Login' : 'Sign Up'}</h2>
 
-        {/* Email Input */}
+      
         <div className="mb-4">
           <label className="block mb-1 text-gray-600" htmlFor="email">
             Email
@@ -41,7 +41,7 @@ const Login = () => {
           />
         </div>
 
-        {/* Password Input (only show if not Forgot Password) */}
+
         {!isForgotPassword && (
           <div className="mb-6">
             <label className="block mb-1 text-gray-600" htmlFor="password">
@@ -59,7 +59,7 @@ const Login = () => {
           </div>
         )}
 
-        {/* Submit Button */}
+ 
         <button
           type="submit"
           className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600"
@@ -67,7 +67,7 @@ const Login = () => {
           {isForgotPassword ? 'Send Reset Link' : isLogin ? 'Login' : 'Sign Up'}
         </button>
 
-        {/* Toggle between Login/Sign Up/Forgot Password */}
+        
         {!isForgotPassword && (
           <div className="flex justify-between mt-4">
             <button
@@ -88,7 +88,6 @@ const Login = () => {
           </div>
         )}
 
-        {/* Back to Login or Sign Up */}
         {isForgotPassword && (
           <div className="mt-4 text-center">
             <button
