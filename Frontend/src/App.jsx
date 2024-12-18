@@ -9,6 +9,7 @@ import ProfilePage from './components/ProfilePage';
 import AboutUs from './components/AboutUs';
 import AmbulanceService from './components/AmbulanceService'; // Import the AmbulanceService component
 import ContactUs from './components/ContactUs'; // Import the ContactUs component
+import AppointmentPage from './components/AppointmentsPage';
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -31,6 +32,7 @@ function App() {
                 <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} setUsername={setUsername} />} />
                 <Route path="/about" element={<AboutUs />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/appointment" element={<AppointmentPage/>}/>
                 <Route path="/services" element={<Services />} />
                 <Route path="/services/ambulance" element={<AmbulanceService />} /> {/* Ambulance Service Route */}
                 <Route path="/contact" element={<ContactUs />} /> {/* Contact Us Route */}
