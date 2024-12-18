@@ -9,7 +9,8 @@ const userSchema = new mongoose.Schema({
     dob: { type: String },
     age: { type: Number },
     medicalHistory: { type: String },
-    image: { type: String },
+    image: { type: String }, // Image URL or path (can be used to store image URL or base64 data)
+    bloodGroup: { type: String }, // New field for blood group
 });
 
 const User = mongoose.model('User', userSchema);

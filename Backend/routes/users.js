@@ -97,23 +97,24 @@ router.get('/:username', async (req, res) => {
 // Update user
 router.put('/:username', async (req, res) => {
     try {
-        const { username, dob, age, medicalHistory, image } = req.body;
+        const { username, dob, age, medicalHistory, image, bloodGroup } = req.body; // Extract bloodGroup from req.body
 
         const updatedUser = await User.findOneAndUpdate(
-            { username: req.params.username },
-            { username, dob, age, medicalHistory, image },
-            { new: true }
+            { username: req.params.username }, // Find user by the username parameter
+            { username, dob, age, medicalHistory, image, bloodGroup }, // Update fields
+            { new: true } // Return the updated document
         );
 
         if (!updatedUser) {
             return res.status(404).send({ message: 'User not found' });
         }
 
-        res.status(200).send(updatedUser);
+        res.status(200).send(updatedUser); // Send updated user as response
     } catch (error) {
-        console.error(error);
+        console.error('Error updating user:', error);
         res.status(500).send({ message: 'Error updating user' });
     }
 });
+
 
 export default router;

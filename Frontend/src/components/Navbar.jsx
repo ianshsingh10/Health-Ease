@@ -1,7 +1,5 @@
-import React from 'react';
-import { Link, NavLink } from 'react-router-dom';
 import React, { useState } from 'react';
-import { Link, NavLink } from 'react-router-dom'; // Import NavLink for active link styling
+import { Link, NavLink } from 'react-router-dom';
 import { FaStethoscope, FaAmbulance, FaBed, FaHeartbeat, FaDollarSign, FaTint } from 'react-icons/fa';
 
 function Navbar({ isLoggedIn, username, setIsLoggedIn, setUsername }) {
@@ -27,6 +25,8 @@ function Navbar({ isLoggedIn, username, setIsLoggedIn, setUsername }) {
                 <div className="hidden md:flex gap-6 text-[2vmin]">
                     <NavLink to="/">Home</NavLink>
                     <NavLink to="/services">Services</NavLink>
+                    <NavLink to="/services/ambulance">Ambulance</NavLink>
+                    <NavLink to="/appointment">Appointment</NavLink>
                 </div>
 
                 <div className="flex items-center gap-4">
