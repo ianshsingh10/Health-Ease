@@ -1,188 +1,165 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
-function AppointmentsPage() {
+function AppointmentPage() {
+  const [doctors, setDoctors] = useState([]);
+  const [filteredDoctors, setFilteredDoctors] = useState([]);
+  const [isBooking, setIsBooking] = useState(false);
   const [formData, setFormData] = useState({
-    patientName: "", // Added patientName field
-    email: "",
-    phone: "",
-    date: "",
-    time: "",
-    searchQuery: "",
-    doctor: null, // To store the selected doctor
+    doctor: null,
+    patientName: '',
+    date: '',
+    time: '',
+    email: '',
+    phone: '',
   });
+  const [searchLocation, setSearchLocation] = useState(''); // State for search filter
 
-  const [isBooking, setIsBooking] = useState(false); // To manage booking form visibility
+  useEffect(() => {
+    // Fetch doctor details when component mounts
+    const fetchDoctors = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/doctors');
+        console.log(response.data); // Check doctor data
+        setDoctors(response.data); // Set doctors in state
+        setFilteredDoctors(response.data); // Initialize filtered doctors with all doctors
+      } catch (error) {
+        console.error('Error fetching doctors:', error);
+        alert('Failed to fetch doctors');
+      }
+    };
 
-  const doctors = [
-    { name: "Dr. Aryan Gupta", specialty: "Cardiologist", location: "Mumbai", charges: "₹1,200", image: "/images/doctor1.jpg" },
-    { name: "Dr. Meera Sharma", specialty: "Dermatologist", location: "Bangalore", charges: "₹800", image: "/images/doctor2.jpg" },
-    { name: "Dr. Kavita Roy", specialty: "Pediatrician", location: "Delhi", charges: "₹1,000", image: "/images/doctor3.jpg" },
-    { name: "Dr. Rohan Desai", specialty: "Neurologist", location: "Pune", charges: "₹1,500", image: "/images/doctor4.jpg" },
-    // Add more doctors...
-  ];
+    fetchDoctors();
+  }, []);
 
-  const filteredDoctors = doctors.filter(
-    (doctor) =>
-      doctor.name.toLowerCase().includes(formData.searchQuery.toLowerCase()) ||
-      doctor.location.toLowerCase().includes(formData.searchQuery.toLowerCase())
-  );
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+  useEffect(() => {
+    // Filter doctors based on location search term
+    const filtered = doctors.filter((doctor) =>
+      doctor.location.toLowerCase().includes(searchLocation.toLowerCase())
+    );
+    setFilteredDoctors(filtered);
+  }, [searchLocation, doctors]); // Re-run the filter when searchLocation or doctors change
 
   const handleBookClick = (doctor) => {
-    setFormData({ ...formData, doctor });
-    setIsBooking(true); // Show booking form after selecting a doctor
+    setFormData({ ...formData, doctor }); // Store doctor in formData for booking
+    setIsBooking(true); // Open the booking modal
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post("http://localhost:5000/appointments", {
-        patientName: formData.patientName, // Send patient name to the backend
-        doctor: {
-          name: formData.doctor.name,
-          specialty: formData.doctor.specialty,
-          location: formData.doctor.location,
-          charges: formData.doctor.charges,
-        },
-        date: formData.date,
-        time: formData.time,
-        email: formData.email,
-        phone: formData.phone,
-      });
 
-      if (response.status === 200) {
-        alert("Appointment booked successfully!");
-        setIsBooking(false); // Close the booking form
-      }
+    if (!formData.doctor) {
+      alert('Please select a doctor.');
+      return;
+    }
+
+    const appointmentData = {
+      patientName: formData.patientName,
+      email: formData.email,
+      phone: formData.phone,
+      doctorName: formData.doctor.name,  // Ensure doctor name is included
+      specialty: formData.doctor.specialty, // Include specialty
+      location: formData.doctor.location, // Include location
+      fees: formData.doctor.fees, // Include doctor's fees
+      date: formData.date,
+      time: formData.time
+    };
+
+    try {
+      const response = await axios.post('http://localhost:5000/appointments', appointmentData);
+      console.log(response.data);
+      alert('Appointment booked successfully');
+      setIsBooking(false); // Close modal after successful booking
     } catch (error) {
-      console.error("Error booking appointment:", error);
-      alert("There was an error booking your appointment.");
+      console.error('Error booking appointment:', error);
+      alert('Error booking appointment');
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-start p-8 bg-white min-h-screen mt-[10vmin]">
-      <div className="w-full max-w-lg text-left space-y-6">
-        <h1 className="text-4xl font-bold leading-tight">
-          Book your <span className="text-blue-500">virtual</span> appointment
-        </h1>
-        <p className="text-gray-600">
-          Get in touch with our expert team and book an appointment online.
-        </p>
-
-        <div className="relative flex items-center">
-          <input
-            type="text"
-            name="searchQuery"
-            placeholder="Search Doctors by name or location"
-            value={formData.searchQuery}
-            onChange={handleChange}
-            className="w-full p-3 border border-gray-300 rounded-lg"
-          />
-          <button className="absolute right-2 bg-blue-500 text-white p-2 rounded-lg">
-            🔍
-          </button>
-        </div>
+    <div className="p-6 mt-[10vmin]">
+      <h1 className="text-3xl font-bold text-center mb-6">Select a Doctor</h1>
+      
+      {/* Search Bar for Location */}
+      <div className="mb-6">
+        <input
+          type="text"
+          value={searchLocation}
+          onChange={(e) => setSearchLocation(e.target.value)} // Update search term
+          placeholder="Search by Location"
+          className="w-full p-2 border rounded-md"
+        />
       </div>
 
-      <div className="w-full mt-8 flex flex-col items-center space-y-6">
-        <h2 className="text-3xl font-bold mb-6">Available Doctors</h2>
-        <ul className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredDoctors.map((doctor, index) => (
-            <li
-              key={index}
-              className="bg-white p-6 rounded-lg shadow-lg flex items-center space-x-4"
-            >
-              <img
-                src={doctor.image}
-                alt={doctor.name}
-                className="w-20 h-20 rounded-full object-cover"
-              />
-              <div className="text-left">
-                <h3 className="text-xl font-semibold">{doctor.name}</h3>
-                <p className="text-gray-600">{doctor.specialty}</p>
-                <p className="text-gray-500">
-                  {doctor.location} | <span className="font-bold">{doctor.charges}</span>
-                </p>
-              </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {filteredDoctors.length > 0 ? (
+          filteredDoctors.map((doctor) => (
+            <div key={doctor._id} className="bg-white p-4 shadow-md rounded-lg">
+              <h3 className="text-xl font-semibold">{doctor.name}</h3>
+              <p className="text-gray-600">{doctor.specialty}</p>
+              <p className="text-gray-500 mt-2">Location: {doctor.location}</p> {/* Display doctor's location */}
               <button
-                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
                 onClick={() => handleBookClick(doctor)}
+                className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none"
               >
-                Book
+                Book Appointment
               </button>
-            </li>
-          ))}
-        </ul>
+            </div>
+          ))
+        ) : (
+          <p>No doctors found for the selected location</p>
+        )}
       </div>
 
-      {/* Booking Form Modal */}
-      {isBooking && (
-        <div className="fixed top-0 left-0 w-full h-full bg-gray-500 bg-opacity-50 flex items-center justify-center z-10">
-          <div className="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full">
+      {isBooking && formData.doctor && ( // Ensure doctor is selected before showing the modal
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
             <h3 className="text-2xl font-semibold mb-4">Book Appointment with {formData.doctor.name}</h3>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit}>
               <input
                 type="text"
-                name="patientName"
-                placeholder="Your Name"
+                placeholder="Patient Name"
                 value={formData.patientName}
-                onChange={handleChange}
-                className="w-full p-3 border border-gray-300 rounded-lg"
-                required
+                onChange={(e) => setFormData({ ...formData, patientName: e.target.value })}
+                className="w-full p-2 mb-4 border rounded-md"
               />
               <input
                 type="email"
-                name="email"
-                placeholder="Your Email"
+                placeholder="Email"
                 value={formData.email}
-                onChange={handleChange}
-                className="w-full p-3 border border-gray-300 rounded-lg"
-                required
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                className="w-full p-2 mb-4 border rounded-md"
               />
               <input
-                type="tel"
-                name="phone"
-                placeholder="Your Phone"
+                type="phone"
+                placeholder="Phone Number"
                 value={formData.phone}
-                onChange={handleChange}
-                className="w-full p-3 border border-gray-300 rounded-lg"
-                required
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                className="w-full p-2 mb-4 border rounded-md"
               />
-              <input
-                type="date"
-                name="date"
-                value={formData.date}
-                onChange={handleChange}
-                className="w-full p-3 border border-gray-300 rounded-lg"
-                required
-              />
-              <input
-                type="time"
-                name="time"
-                value={formData.time}
-                onChange={handleChange}
-                className="w-full p-3 border border-gray-300 rounded-lg"
-                required
-              />
+              <div className="flex space-x-4 mb-4">
+                <input
+                  type="date"
+                  placeholder="Appointment Date"
+                  value={formData.date}
+                  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                  className="w-full p-2 border rounded-md"
+                />
+                <input
+                  type="time"
+                  placeholder="Appointment Time"
+                  value={formData.time}
+                  onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+                  className="w-full p-2 border rounded-md"
+                />
+              </div>
               <button
                 type="submit"
-                className="w-full bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600"
+                className="w-full bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 focus:outline-none"
               >
-                Confirm Booking
+                Submit
               </button>
             </form>
-            <button
-              onClick={() => setIsBooking(false)}
-              className="mt-4 text-gray-500 hover:text-gray-700"
-            >
-              Cancel
-            </button>
           </div>
         </div>
       )}
@@ -190,4 +167,4 @@ function AppointmentsPage() {
   );
 }
 
-export default AppointmentsPage;
+export default AppointmentPage;

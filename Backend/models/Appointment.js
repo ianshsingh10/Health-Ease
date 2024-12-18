@@ -25,8 +25,8 @@ const appointmentSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  charges: {
-    type: String,
+  fees: {
+    type: Number,
     required: true,
   },
   date: {

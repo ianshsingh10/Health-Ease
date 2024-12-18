@@ -6,6 +6,7 @@ const doctorSchema = new mongoose.Schema({
   fees: { type: Number, required: true },  // Fees charged by the doctor
   hospital: { type: String, required: true },  // Hospital where the doctor works
   image: { type: String, required: true }, // Image URL of the doctor
+  location: { type: String, required: true }, // Location of the doctor
 });
 
 const Doctor = mongoose.model('Doctor', doctorSchema);

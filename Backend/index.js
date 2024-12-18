@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import userRoutes from './routes/users.js';
+import doctorRoutes from './routes/doctors.js';  // Assuming you have a route for doctors
 import User from './models/userModel.js';
 import Appointment from './models/Appointment.js';
 import bcrypt from 'bcrypt';
@@ -57,32 +58,38 @@ app.post('/register', async (req, res) => {
 
 // Appointment booking route
 app.post('/appointments', async (req, res) => {
-  const { doctor, date, time, email, phone, patientName } = req.body;
+  const { doctorName, specialty, location, fees, patientName, email, phone, date, time } = req.body;
+
+  // Check if all required fields are provided
+  if (!doctorName || !specialty || !location || !fees || !patientName || !email || !phone || !date || !time) {
+    return res.status(400).json({ error: 'All fields are required.' });
+  }
 
   try {
-    // Save the appointment to the database
-    const newAppointment = new Appointment({
-      patientName, // Added patientName to the schema
-      doctorName: doctor.name, // Access doctor properties from the sent object
-      specialty: doctor.specialty,
-      location: doctor.location,
-      charges: doctor.charges,
-      date,
-      time,
+    // Create the appointment
+    const appointment = new Appointment({
+      doctorName,
+      specialty,
+      location,
+      fees,
+      patientName,
       email,
       phone,
+      date,
+      time,
     });
 
-    await newAppointment.save();
-    res.status(200).send({ message: 'Appointment booked successfully' });
+    await appointment.save();
+    res.status(200).json({ message: 'Appointment booked successfully', appointment });
   } catch (error) {
     console.error('Error booking appointment:', error);
-    res.status(500).send({ message: 'Error booking appointment' });
+    res.status(500).json({ error: 'Error booking appointment' });
   }
 });
 
-// User routes
+// User and Doctor routes
 app.use('/api/users', userRoutes);
+app.use('/api/doctors', doctorRoutes);  // Adding doctor routes
 
 // Connect to the database
 mongoose.connect(database)
