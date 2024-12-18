@@ -1,5 +1,8 @@
 import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, NavLink } from 'react-router-dom'; // Import NavLink for active link styling
+import { FaStethoscope, FaAmbulance, FaBed, FaHeartbeat, FaDollarSign, FaTint } from 'react-icons/fa';
 
 function Navbar({ isLoggedIn, username, setIsLoggedIn, setUsername }) {
     const handleLogout = () => {
