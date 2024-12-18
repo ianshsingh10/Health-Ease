@@ -1,3 +1,2 @@
-export const PORT=5555;
-
-export const database='mongodb://localhost:27017/HealthEase';
+export const database='mongodb+srv://HealthEase:VITians@health-ease.vkrd6.mongodb.net/User?retryWrites=true&w=majority&appName=Health-Ease';
+export const jwtSecret = '48u1545uA';
