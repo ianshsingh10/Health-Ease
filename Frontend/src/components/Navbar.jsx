@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';  // Import NavLink for active link styling
+import { Link, NavLink } from 'react-router-dom'; // Import NavLink for active link styling
 import { FaStethoscope, FaAmbulance, FaBed, FaHeartbeat, FaDollarSign, FaTint } from 'react-icons/fa';
 
 function Navbar() {
@@ -7,44 +7,47 @@ function Navbar() {
 
   return (
     <nav className="fixed top-0 w-[100vw] z-[5]">
+      {/* Top Spacer */}
       <div className="h-[3vmin] bg-white"></div>
+
+      {/* Navbar */}
       <div className="h-[8vh] bg-[#F3F3F3] flex items-center justify-between p-[2vmin] pl-[5vmin] pr-[5vmin]">
+        {/* Logo Section */}
         <div className="flex items-center gap-[1vmin]">
-          <img
-            src="/logo.png"
-            alt="Health Ease Logo"
-            className="w-12 h-12 mr-2"
-          />
+          <img src="/logo.png" alt="Health Ease Logo" className="w-12 h-12 mr-2" />
           <div
             className="w-[5vmin] h-[5vmin] bg-cover bg-center"
             style={{
-              backgroundImage:
-                "url('Frontend/public/logo-removebg-preview.png')",
+              backgroundImage: "url('/logo-removebg-preview.png')",
             }}
           ></div>
-          <a href="#" className="flex items-center gap-[1vmin]">
+          <Link to="/" className="flex items-center gap-[1vmin]">
             <div className="w-[15vmin] p-[1vmin] text-[2.5vmin] text-center rounded-md text-white bg-gradient-to-r from-[#A7E2FF] to-[#0095DE]">
-              HeathEase
+              HealthEase
             </div>
-          </a>
+          </Link>
         </div>
+
+        {/* Navigation Links */}
         <div className="flex gap-[3vmin] text-[2vmin] relative">
-          {/* Use NavLink for active link styling */}
           <NavLink
             to="/"
-            exact
-            activeClassName="text-blue-600"  // Add active class for Home
-            className="hover:text-blue-500"
+            className={({ isActive }) =>
+              isActive ? 'text-blue-600' : 'hover:text-blue-500'
+            }
           >
             HOME
           </NavLink>
           <NavLink
             to="/about"
-            activeClassName="text-blue-600"  // Active color for About
-            className="hover:text-blue-500"
+            className={({ isActive }) =>
+              isActive ? 'text-blue-600' : 'hover:text-blue-500'
+            }
           >
             ABOUT
           </NavLink>
+
+          {/* Services Dropdown */}
           <div className="relative">
             <button
               onClick={() => setShowDropdown(!showDropdown)}
@@ -55,65 +58,87 @@ function Navbar() {
             {showDropdown && (
               <div className="absolute top-[100%] left-0 bg-white shadow-lg rounded-md mt-2 w-[25vmin] text-left">
                 <ul className="text-[1.8vmin]">
-                  <li className="px-[2vmin] py-[1vmin] hover:bg-gray-200 flex items-center gap-[1vmin]">
+                  <li
+                    onClick={() => setShowDropdown(false)} // Close the dropdown
+                    className="px-[2vmin] py-[1vmin] hover:bg-gray-200 flex items-center gap-[1vmin]"
+                  >
                     <FaStethoscope />
-                    <a href="#">Online Consultation</a>
+                    <Link to="/services/consultation">Online Consultation</Link>
                   </li>
-                  <li className="px-[2vmin] py-[1vmin] hover:bg-gray-200 flex items-center gap-[1vmin]">
+                  <li
+                    onClick={() => setShowDropdown(false)} // Close the dropdown
+                    className="px-[2vmin] py-[1vmin] hover:bg-gray-200 flex items-center gap-[1vmin]"
+                  >
                     <FaAmbulance />
-                    <a href="#">Ambulance Services</a>
+                    <Link to="/services/ambulance">Ambulance Services</Link> {/* Ensure this route points to the correct AmbulanceServices component */}
                   </li>
-                  <li className="px-[2vmin] py-[1vmin] hover:bg-gray-200 flex items-center gap-[1vmin]">
+                  <li
+                    onClick={() => setShowDropdown(false)} // Close the dropdown
+                    className="px-[2vmin] py-[1vmin] hover:bg-gray-200 flex items-center gap-[1vmin]"
+                  >
                     <FaBed />
-                    <a href="#">Bed Availability</a>
+                    <Link to="/services/beds">Bed Availability</Link>
                   </li>
-                  <li className="px-[2vmin] py-[1vmin] hover:bg-gray-200 flex items-center gap-[1vmin]">
+                  <li
+                    onClick={() => setShowDropdown(false)} // Close the dropdown
+                    className="px-[2vmin] py-[1vmin] hover:bg-gray-200 flex items-center gap-[1vmin]"
+                  >
                     <FaHeartbeat />
-                    <a href="#">Body Checkup</a>
+                    <Link to="/services/checkup">Body Checkup</Link>
                   </li>
-                  <li className="px-[2vmin] py-[1vmin] hover:bg-gray-200 flex items-center gap-[1vmin]">
+                  <li
+                    onClick={() => setShowDropdown(false)} // Close the dropdown
+                    className="px-[2vmin] py-[1vmin] hover:bg-gray-200 flex items-center gap-[1vmin]"
+                  >
                     <FaDollarSign />
-                    <a href="#">Healthcare Cost Estimation</a>
+                    <Link to="/services/cost-estimation">Healthcare Cost Estimation</Link>
                   </li>
-                  <li className="px-[2vmin] py-[1vmin] hover:bg-gray-200 flex items-center gap-[1vmin]">
+                  <li
+                    onClick={() => setShowDropdown(false)} // Close the dropdown
+                    className="px-[2vmin] py-[1vmin] hover:bg-gray-200 flex items-center gap-[1vmin]"
+                  >
                     <FaTint />
-                    <a href="#">Blood Bank</a>
+                    <Link to="/services/blood-bank">Blood Bank</Link>
                   </li>
                 </ul>
               </div>
             )}
           </div>
+
           <NavLink
             to="/articles"
-            activeClassName="text-blue-600"  // Active color for Articles
-            className="hover:text-blue-500"
+            className={({ isActive }) =>
+              isActive ? 'text-blue-600' : 'hover:text-blue-500'
+            }
           >
             ARTICLES
           </NavLink>
           <NavLink
             to="/medicines"
-            activeClassName="text-blue-600"  // Active color for Medicines
-            className="hover:text-blue-500"
+            className={({ isActive }) =>
+              isActive ? 'text-blue-600' : 'hover:text-blue-500'
+            }
           >
             MEDICINES
           </NavLink>
           <NavLink
             to="/contact"
-            activeClassName="text-blue-600"  // Active color for Contact
-            className="hover:text-blue-500"
+            className={({ isActive }) =>
+              isActive ? 'text-blue-600' : 'hover:text-blue-500'
+            }
           >
             CONTACT US
           </NavLink>
         </div>
-        
-        <div className="flex gap-[1vmin]">
-            <a href="">
-              <div className="w-[15vmin] p-[1vmin] text-[2vmin] text-center rounded-md text-white bg-gradient-to-r from-[#A7E2FF] to-[#0095DE]">Language</div>
-            </a>
-            <a href="">
-              <div className="w-[15vmin] p-[1vmin] text-[2vmin] text-center rounded-md text-white bg-gradient-to-r from-[#A7E2FF] to-[#0095DE]">Join Us</div>
-            </a>
 
+        {/* Buttons Section */}
+        <div className="flex gap-[1vmin]">
+          <button className="w-[15vmin] p-[1vmin] text-[2vmin] text-center rounded-md text-white bg-gradient-to-r from-[#A7E2FF] to-[#0095DE]">
+            Language
+          </button>
+          <button className="w-[15vmin] p-[1vmin] text-[2vmin] text-center rounded-md text-white bg-gradient-to-r from-[#A7E2FF] to-[#0095DE]">
+            Join Us
+          </button>
           <Link to="/login">
             <div className="w-[15vmin] p-[1vmin] text-[2vmin] text-center rounded-md text-white bg-gradient-to-r from-[#A7E2FF] to-[#0095DE]">
               Login
