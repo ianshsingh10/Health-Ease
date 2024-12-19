@@ -39,6 +39,14 @@ function Navbar({ isLoggedIn, username, setIsLoggedIn, setUsername }) {
           >
             ABOUT
           </NavLink>
+          <NavLink
+            to="/MedicineOrder"
+            className={({ isActive }) =>
+              isActive ? "text-blue-600" : "hover:text-blue-500"
+            }
+          >
+            MEDICINES
+          </NavLink>
           <div className="relative">
                     <button
                     onClick={() => setShowDropdown(!showDropdown)}

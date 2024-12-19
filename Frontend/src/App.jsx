@@ -13,6 +13,8 @@ import AppointmentPage from './components/AppointmentsPage'; // Import the Appoi
 import OnlineConsultation from './components/OnlineConsultation'; // Import the OnlineConsultation component
 import BloodDonationPage from './components/BloodDonationPage'; // Import the BloodDonationPage component
 import ArticlesPage from './components/ArticlesPage'; // Import the ArticlesPage component
+import MedicineOrder from './components/MedicineOrder';
+import AddressPage from './components/AddressPage';
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -43,6 +45,8 @@ function App() {
                 <Route path="/articles" element={<ArticlesPage />} /> {/* Articles Page route */}
                 <Route path="/contact" element={<ContactUs />} /> {/* Contact Us Route */}        
                 <Route path="/profile/:username" element={<ProfilePage />} />
+                <Route path="/MedicineOrder" element={<MedicineOrder />} />
+                <Route path="/address" element={<AddressPage />} />
             </Routes>
         </div>
     );
