@@ -4,9 +4,11 @@ import jwt from 'jsonwebtoken';
 import multer from 'multer';
 import User from '../models/userModel.js';
 import Appointment from '../models/Appointment.js';
+import Consultance from '../models/Consultation.js';
 import Doctor from '../models/Doctor.js';
 import { jwtSecret } from '../config.js';
 import { authMiddleware } from './middleware.js';
+import Consult from '../models/Consultation.js';
 
 const router = express.Router();
 const storage = multer.memoryStorage();
@@ -86,16 +88,18 @@ router.put('/:username', upload.single('image'), async (req, res) => {
 // Book Appointment route (with user authentication)
 router.post('/appointments', authMiddleware, async (req, res) => {
     try {
-        const { doctorName, specialty, location, fees, patientName, email, phone, date, time } = req.body;
-        if (!doctorName || !specialty || !location || !fees || !patientName || !email || !phone || !date || !time) {
+        const { doctorName, specialty, hospital, location, fees, patientName, email, phone, date, time } = req.body;
+        if (!doctorName || !specialty ||!hospital || !location || !fees || !patientName || !email || !phone || !date || !time) {
             return res.status(400).json({ error: 'All fields are required.' });
         }
 
         const username = req.user.username;
+
         const appointment = new Appointment({
             username,
             doctorName,
             specialty,
+            hospital,
             location,
             fees,
             patientName,
@@ -114,18 +118,42 @@ router.post('/appointments', authMiddleware, async (req, res) => {
 });
 
 // Get appointments for the logged-in user
-router.get('/appointments', authMiddleware, async (req, res) => {
-  try {
-    const username = req.user.username; // Retrieve username from authenticated user
+router.get('/appointments/:username', async (req, res) => {
+    try {
+        const username = req.params.username; // Retrieve username from authenticated user
 
-    // Find appointments for the logged-in user
-    const appointments = await Appointment.find({ username }).exec();
+        // Find appointments for the logged-in user
+        const appointments = await Appointment.find({ username }).exec();
 
-    res.status(200).json(appointments);
-  } catch (error) {
-    console.error('Error fetching appointments:', error);
-    res.status(500).json({ message: 'Error fetching appointments.' });
-  }
+        res.status(200).json(appointments);
+    } catch (error) {
+        console.error('Error fetching appointments:', error);
+        res.status(500).json({ message: 'Error fetching appointments.' });
+    }
 });
+
+router.post('/book-appointment',authMiddleware, async (req, res) => {
+    try {
+      const { name, email, location, doctorName, date, time, symptoms } = req.body;
+      const username = req.user.username;
+      // Save the data into the database
+      const newConsultation = new Consultance({
+        username,
+        name,
+        email,
+        location,
+        doctorName,
+        date,
+        time,
+        symptoms,
+      });
+  
+      await newConsultation.save();
+      res.status(200).send({ message: 'Appointment booked successfully!' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: 'Error booking appointment.' });
+    }
+  });
 
 export default router;

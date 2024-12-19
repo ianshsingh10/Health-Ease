@@ -25,6 +25,10 @@ const appointmentSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  hospital: {
+    type: String,
+    required: true,
+  },
   location: {
     type: String,
     required: true,
@@ -34,7 +38,7 @@ const appointmentSchema = new mongoose.Schema({
     required: true,
   },
   date: {
-    type: Date,
+    type: String, // Store date as a string in 'YYYY-MM-DD' format
     required: true,
   },
   time: {
