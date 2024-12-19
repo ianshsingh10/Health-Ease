@@ -27,6 +27,7 @@ function Navbar({ isLoggedIn, username, setIsLoggedIn, setUsername }) {
                     <NavLink to="/services">Services</NavLink>
                     <NavLink to="/services/ambulance">Ambulance</NavLink>
                     <NavLink to="/appointment">Appointment</NavLink>
+                    <NavLink to="/contact">Contact</NavLink>
                 </div>
 
                 <div className="flex items-center gap-4">
