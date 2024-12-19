@@ -1,73 +1,217 @@
-import React from 'react';
-import imagePath from '../images/ai-healthcare-desktop.webp'; // Adjust this path based on component location
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import imagePath from '../images/ai-healthcare-desktop.webp';
 
 function OnlineConsultation() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    location: '',
+    doctorName: '',
+    date: '',
+    time: '',
+    symptoms: '',
+  });
+
+  const [responseMessage, setResponseMessage] = useState('');
+  const [doctors, setDoctors] = useState([]);
+  const [filteredDoctors, setFilteredDoctors] = useState([]);
+  const [locations, setLocations] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch doctors data
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/doctors');
+        const doctorData = response.data;
+        setDoctors(doctorData);
+        setFilteredDoctors(doctorData); // Initially, show all doctors
+        
+        // Extract unique locations from doctor data
+        const uniqueLocations = [...new Set(doctorData.map(doctor => doctor.location))];
+        setLocations(uniqueLocations); // Set the locations in the state
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching doctors:', error);
+        setResponseMessage('Failed to fetch doctor data.');
+      }
+    };
+
+    fetchDoctors();
+  }, []);
+
+  // Handle changes in form inputs
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+
+    // If location changes, filter the doctors
+    if (name === 'location') {
+      filterDoctors(value); // Filter doctors based on location
+    }
+  };
+
+  // Filter doctors based on location
+  const filterDoctors = (location) => {
+    if (location === '') {
+      setFilteredDoctors(doctors); // If location is empty, show all doctors
+    } else {
+      setFilteredDoctors(
+        doctors.filter(doctor =>
+          doctor.location.toLowerCase().includes(location.toLowerCase())
+        )
+      );
+    }
+  };
+
+  // Handle form submission
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+  
+    const token = localStorage.getItem('token'); // Or wherever you're storing the JWT token
+  
+    try {
+      const response = await axios.post('http://localhost:5000/api/users/book-appointment', formData, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Include token in the request headers
+        },
+      });
+      setResponseMessage(response.data.message);
+    } catch (error) {
+      console.error(error);
+      setResponseMessage('Error booking the appointment. Please try again.');
+    }
+  };
+
+  // Get today's date in YYYY-MM-DD format for the date input
+  const today = new Date().toISOString().split('T')[0];
+
   return (
     <div
+      className="relative bg-center pt-[12vmin] pb-[10vmin]"
       style={{
-        position: 'relative', // Ensure proper stacking for overlay
-        height: '100vh', // Full height for the background
         backgroundImage: `url(${imagePath})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
         backgroundAttachment: 'fixed',
       }}
     >
-      {/* Lighter Overlay to fade the background */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          backgroundColor: 'rgba(255, 255, 255, 0.6)', // Light white with 60% opacity
-          zIndex: 1, // Keep it below content
-        }}
-      ></div>
+      <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50"></div>
 
-      {/* Content */}
-      <div
-        style={{
-          position: 'relative', // Ensure content is above the overlay
-          zIndex: 2,
-          paddingTop: '100px', // Add padding to avoid hiding under navbar
-        }}
-        className="flex flex-col items-center justify-center text-center p-8"
-      >
-        <h1 className="text-4xl font-bold text-[#0095DE]">Book Your Virtual Appointment</h1>
-        <p className="mt-4 text-lg" style={{ color: '#000000' }}>
-          Being in the healthcare sector, we consider it our paradigm duty to ensure the safety of
-          our patients, transparency in our practices, and absolute timely care.
+      <div className="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-4 md:px-8">
+        <h1 className="text-4xl md:text-5xl font-extrabold leading-tight">
+          Book Your Virtual Appointment
+        </h1>
+        <p className="mt-4 text-lg md:text-xl">
+          We prioritize the safety of our patients and aim to provide transparent, timely care. Get expert consultations from our experienced doctors.
         </p>
-        <h2 className="mt-8 text-3xl font-semibold text-[#333333]">
-          Get Expert <span className="text-[#0095DE]">Medical Consultation!</span>
+
+        <h2 className="mt-8 text-2xl md:text-3xl font-semibold">
+          Get Expert Medical Consultation
         </h2>
-        <p className="mt-4" style={{ color: '#000000' }}>
-          Our doctors provide expert medical advice and consultation. Get in touch with our team to
-          discuss.
+        <p className="mt-4 text-sm md:text-lg max-w-2xl mx-auto">
+          Our doctors provide expert medical advice and consultation. Book your virtual appointment now and consult our team.
         </p>
-        <div className="mt-6">
-          <input
-            type="text"
-            placeholder="Search Doctors in your location"
-            className="border rounded-md p-2 w-[300px] focus:outline-none"
-          />
-          <button className="ml-2 bg-[#0095DE] text-white px-4 py-2 rounded-md">
-            Search
-          </button>
+
+        <div className="mt-12 p-6 md:p-8 rounded-lg shadow-xl max-w-3xl w-full mx-auto backdrop-blur-xl bg-white/20 border border-white/30">
+          <form onSubmit={handleFormSubmit} className="mt-6 space-y-4">
+            
+            {/* Name Input */}
+            <input
+              type="text"
+              name="name"
+              placeholder="Your Full Name"
+              value={formData.name}
+              onChange={handleInputChange}
+              className="w-full p-3 border rounded-md shadow-sm focus:ring-2 focus:ring-[#0095DE] text-black placeholder-gray-500 bg-white backdrop-blur-md"
+            />
+            
+            {/* Email Input */}
+            <input
+              type="email"
+              name="email"
+              placeholder="Your Email"
+              value={formData.email}
+              onChange={handleInputChange}
+              className="w-full p-3 border rounded-md shadow-sm focus:ring-2 focus:ring-[#0095DE] text-black placeholder-gray-500 bg-white backdrop-blur-md"
+            />
+
+            {/* Location Dropdown */}
+            <select
+              name="location"
+              value={formData.location}
+              onChange={handleInputChange}
+              className="w-full p-3 border rounded-md shadow-sm focus:ring-2 focus:ring-[#0095DE] text-black placeholder-gray-500 bg-white backdrop-blur-md"
+            >
+              <option value="">Select Location</option>
+              {locations.map((location, index) => (
+                <option key={index} value={location}>
+                  {location}
+                </option>
+              ))}
+            </select>
+
+            {/* Doctor Dropdown */}
+            <select
+              name="doctorName"
+              value={formData.doctorName}
+              onChange={handleInputChange}
+              className="w-full p-3 border rounded-md shadow-sm focus:ring-2 focus:ring-[#0095DE] text-black placeholder-gray-500 bg-white backdrop-blur-md"
+            >
+              <option value="">Select Doctor</option>
+              {loading ? (
+                <option>Loading doctors...</option>
+              ) : (
+                filteredDoctors.map((doctor) => (
+                  <option key={doctor._id} value={doctor.name}>
+                    {doctor.name} - {doctor.specialty} ({doctor.location})
+                  </option>
+                ))
+              )}
+            </select>
+
+            {/* Date Input */}
+            <input
+              type="date"
+              name="date"
+              value={formData.date}
+              onChange={handleInputChange}
+              min={today} // Set minimum date to today
+              className="w-full p-3 border rounded-md shadow-sm focus:ring-2 focus:ring-[#0095DE] text-black placeholder-gray-500 bg-white backdrop-blur-md"
+            />
+
+            {/* Time Input */}
+            <input
+              type="time"
+              name="time"
+              value={formData.time}
+              onChange={handleInputChange}
+              min="10:00" // Set minimum time to 10:00 AM
+              max="22:00" // Set maximum time to 10:00 PM
+              className="w-full p-3 border rounded-md shadow-sm focus:ring-2 focus:ring-[#0095DE] text-black placeholder-gray-500 bg-white backdrop-blur-md"
+            />
+
+            {/* Symptoms Input */}
+            <textarea
+              name="symptoms"
+              placeholder="Symptoms"
+              value={formData.symptoms}
+              onChange={handleInputChange}
+              className="w-full p-3 border rounded-md shadow-sm focus:ring-2 focus:ring-[#0095DE] text-black placeholder-gray-500 bg-white backdrop-blur-md"
+            />
+            
+            {/* Submit Button */}
+            <button
+              type="submit"
+              className="w-full bg-[#0095DE] text-white py-3 px-6 rounded-md hover:bg-[#007bbd]"
+            >
+              Book Now
+            </button>
+          </form>
         </div>
-        <div className="mt-12 bg-white p-4 rounded-md shadow-md w-[80%] max-w-[600px]">
-          <p className="font-semibold">Easily book an appointment in 3 simple steps:</p>
-          <ol className="mt-4 list-decimal list-inside text-left">
-            <li>Enter your details</li>
-            <li>Select a time slot</li>
-            <li>Confirm your appointment</li>
-          </ol>
-          <button className="mt-4 bg-[#0095DE] text-white px-6 py-2 rounded-md hover:bg-[#007bbd]">
-            Book Now
-          </button>
-        </div>
+
+        {responseMessage && (
+          <div className="mt-6 text-xl text-center text-green-600 font-semibold">{responseMessage}</div>
+        )}
       </div>
     </div>
   );

@@ -11,8 +11,7 @@ function Navbar({ isLoggedIn, username, setIsLoggedIn, setUsername }) {
   const [showDropdown, setShowDropdown] = useState(false);
 
   return (
-    <nav className="fixed top-0 w-full z-50 shadow-md">
-      <div className="h-[3vmin] bg-white"></div>
+    <nav className="fixed top-[2vmin] w-full z-50 shadow-md">
       <div className="h-[8vh] bg-[#F3F3F3] flex items-center justify-between px-6 md:px-16">
         <div className="flex items-center gap-4">
           <img src="/logo.png" alt="Logo" className="w-12 h-12" />

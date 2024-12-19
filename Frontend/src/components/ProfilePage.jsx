@@ -25,6 +25,7 @@ const PatientProfilePage = () => {
         bloodGroup: '',
         image: null,
     });
+    const [selectedAppointment, setSelectedAppointment] = useState(null);
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -44,7 +45,7 @@ const PatientProfilePage = () => {
 
         const fetchUserAppointments = async () => {
             try {
-                const response = await axios.get(`http://localhost:5000/api/patients/${username}/appointments`);
+                const response = await axios.get(`http://localhost:5000/api/users/appointments/${username}`);
                 setAppointments(response.data);
             } catch (error) {
                 console.error('Error fetching appointments:', error);
@@ -88,6 +89,14 @@ const PatientProfilePage = () => {
         }
     };
 
+    const handleShowDetails = (appointment) => {
+        setSelectedAppointment(appointment);
+    };
+
+    const handleCloseModal = () => {
+        setSelectedAppointment(null);
+    };
+
     if (!userData) {
         return <div className="text-center p-4">Loading...</div>;
     }
@@ -98,112 +107,156 @@ const PatientProfilePage = () => {
         <div className="container mx-auto p-8 max-w-5xl">
             <h1 className="text-4xl font-semibold mb-6 text-center">Patient Profile</h1>
 
-            {/* Patient Profile Display */}
             <div className="bg-white shadow-lg rounded-lg p-8 mb-8">
-                <div className="flex flex-col items-center mb-6">
-                    <img
-                        src={userData.image ? `data:image/png;base64,${userData.image}` : '/default-avatar.png'}
-                        alt="Patient Avatar"
-                        className="w-32 h-32 rounded-full border-4 border-blue-500 mb-4"
-                    />
-                    <h2 className="text-2xl font-semibold mb-2">{userData.username}</h2>
-                    <p className="text-gray-600">Age: {age}</p>
-                    <p className="text-gray-600">DOB: {userData.dob}</p>
-                    <p className="text-gray-600">Blood Group: {userData.bloodGroup}</p>
-                </div>
-
-                <button
-                    onClick={() => setIsEditing(true)}
-                    className="w-full py-2 mt-4 bg-blue-600 text-white rounded-lg shadow-lg transition duration-200 hover:bg-blue-700"
-                >
-                    Edit Profile
-                </button>
+                {isEditing ? (
+                    <form onSubmit={handleUpdateSubmit}>
+                        <div className="mb-4">
+                            <label className="block text-gray-700">Username</label>
+                            <input
+                                type="text"
+                                name="username"
+                                value={updatedData.username}
+                                onChange={handleInputChange}
+                                className="w-full p-2 border border-gray-300 rounded"
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block text-gray-700">Date of Birth</label>
+                            <input
+                                type="date"
+                                name="dob"
+                                value={updatedData.dob}
+                                onChange={handleInputChange}
+                                className="w-full p-2 border border-gray-300 rounded"
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block text-gray-700">Medical History</label>
+                            <textarea
+                                name="medicalHistory"
+                                value={updatedData.medicalHistory}
+                                onChange={handleInputChange}
+                                className="w-full p-2 border border-gray-300 rounded"
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block text-gray-700">Blood Group</label>
+                            <input
+                                type="text"
+                                name="bloodGroup"
+                                value={updatedData.bloodGroup}
+                                onChange={handleInputChange}
+                                className="w-full p-2 border border-gray-300 rounded"
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block text-gray-700">Profile Picture</label>
+                            <input
+                                type="file"
+                                name="image"
+                                onChange={handleFileChange}
+                                className="w-full p-2 border border-gray-300 rounded"
+                            />
+                        </div>
+                        <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded">
+                            Save Changes
+                        </button>
+                    </form>
+                ) : (
+                    <>
+                        <div className="flex items-center mb-6">
+                            <img
+                                src={`data:image/jpeg;base64,${userData.image}`}
+                                alt="Profile"
+                                className="w-32 h-32 rounded-full object-cover mr-6"
+                            />
+                            <div>
+                                <h2 className="text-2xl font-bold">{userData.username}</h2>
+                                <p className="text-gray-600">Age: {age}</p>
+                                <p className="text-gray-600">Blood Group: {userData.bloodGroup}</p>
+                            </div>
+                        </div>
+                        <p className="text-gray-700 mb-4">
+                            <strong>Medical History:</strong> {userData.medicalHistory}
+                        </p>
+                        <button
+                            onClick={() => setIsEditing(true)}
+                            className="bg-blue-500 text-white py-2 px-4 rounded"
+                        >
+                            Edit Profile
+                        </button>
+                    </>
+                )}
             </div>
 
-            {/* Edit Profile Form */}
-            {isEditing && (
-                <form onSubmit={handleUpdateSubmit} className="bg-white shadow-lg rounded-lg p-8 mb-8">
-                    <div className="mb-4">
-                        <label className="text-gray-700 font-semibold">Username</label>
-                        <input
-                            type="text"
-                            name="username"
-                            value={updatedData.username}
-                            onChange={handleInputChange}
-                            className="w-full mt-2 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                    </div>
+            <div className="bg-white shadow-lg rounded-lg p-8">
+                <h2 className="text-3xl font-semibold mb-6">Appointments</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {appointments.length > 0 ? (
+                        appointments.map((appointment, index) => (
+                            <div
+                                key={index}
+                                className="border border-gray-200 rounded-lg shadow-md p-6 flex flex-col justify-between"
+                            >
+                                <div>
+                                    <h3 className="text-lg font-bold mb-2">
+                                        {appointment.doctorName}
+                                    </h3>
+                                    <p className="text-gray-600">
+                                        <strong>Date:</strong> {appointment.date}
+                                    </p>
+                                    <p className="text-gray-600">
+                                        <strong>Time:</strong> {appointment.time}
+                                    </p>
+                                    <p className="text-gray-600">
+                                        <strong>Patient Name:</strong> {appointment.patientName}
+                                    </p>
+                                </div>
+                                <button
+                                    className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200"
+                                    onClick={() => handleShowDetails(appointment)}
+                                >
+                                    Show Details
+                                </button>
+                            </div>
+                        ))
+                    ) : (
+                        <p className="text-gray-600">No appointments found.</p>
+                    )}
+                </div>
+            </div>
 
-                    <div className="mb-4">
-                        <label className="text-gray-700 font-semibold">DOB</label>
-                        <input
-                            type="date"
-                            name="dob"
-                            value={updatedData.dob}
-                            onChange={handleInputChange}
-                            className="w-full mt-2 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
+            {selectedAppointment && (
+                <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full">
+                        <h2 className="text-2xl font-bold mb-4">{selectedAppointment.doctorName}</h2>
+                        <p className="text-gray-600">
+                            <strong>Specialty:</strong> {selectedAppointment.specialty}
+                        </p>
+                        <p className="text-gray-600">
+                            <strong>Date:</strong> {selectedAppointment.date}
+                        </p>
+                        <p className="text-gray-600">
+                            <strong>Time:</strong> {selectedAppointment.time}
+                        </p>
+                        <p className="text-gray-600">
+                            <strong>Location:</strong> {selectedAppointment.location}
+                        </p>
+                        <p className="text-gray-600">
+                            <strong>Fees:</strong> ₹{selectedAppointment.fees}
+                        </p>
+                        <p className="text-gray-600">
+                            <strong>Patient Name:</strong> {selectedAppointment.patientName}
+                        </p>
+                        <button
+                            className="mt-4 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 transition duration-200"
+                            onClick={handleCloseModal}
+                        >
+                            Close
+                        </button>
                     </div>
-
-                    <div className="mb-4">
-                        <label className="text-gray-700 font-semibold">Blood Group</label>
-                        <input
-                            type="text"
-                            name="bloodGroup"
-                            value={updatedData.bloodGroup}
-                            onChange={handleInputChange}
-                            className="w-full mt-2 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                    </div>
-
-                    <div className="mb-4">
-                        <label className="text-gray-700 font-semibold">Medical History</label>
-                        <textarea
-                            name="medicalHistory"
-                            value={updatedData.medicalHistory}
-                            onChange={handleInputChange}
-                            className="w-full mt-2 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                    </div>
-
-                    <div className="mb-4">
-                        <label className="text-gray-700 font-semibold">Profile Picture</label>
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleFileChange}
-                            className="w-full mt-2 p-3 border border-gray-300 rounded-lg"
-                        />
-                    </div>
-
-                    <button
-                        type="submit"
-                        className="w-full py-2 mt-4 bg-blue-600 text-white rounded-lg shadow-lg transition duration-200 hover:bg-blue-700"
-                    >
-                        Save Changes
-                    </button>
-                </form>
+                </div>
             )}
-
-            {/* Appointments Section */}
-            <div className="bg-white shadow-lg rounded-lg p-8 mb-8">
-                <h2 className="text-3xl font-semibold mb-4">Appointments</h2>
-
-                <div className="mb-6">
-                    <h3 className="text-xl font-semibold">Upcoming Appointments</h3>
-                    <ul className="list-disc pl-6">
-                        {appointments.length > 0 ? (
-                            appointments.map((appointment, index) => (
-                                <li key={index} className="text-gray-600">
-                                    Appointment with Dr. {appointment.doctorId?.name || 'Unknown Doctor'} ({appointment.doctorId?.specialty || 'Specialty not available'}) on {new Date(appointment.appointmentDate).toLocaleDateString()} at {appointment.time}
-                                </li>
-                            ))
-                        ) : (
-                            <li className="text-gray-600">No upcoming appointments</li>
-                        )}
-                    </ul>
-                </div>
-            </div>
         </div>
     );
 };
