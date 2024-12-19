@@ -54,7 +54,7 @@
                     <h2 className="text-2xl font-bold mb-6 text-center">Register</h2>
 
                     <div className="mb-4">
-                        <label htmlFor="uniqueId" className="block">Unique ID:</label>
+                        <label htmlFor="uniqueId" className="block">Aadhaar ID:</label>
                         <input
                             type="text"
                             name="uniqueId"

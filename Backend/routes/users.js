@@ -6,6 +6,7 @@ import User from '../models/userModel.js';
 import Appointment from '../models/Appointment.js';
 import Doctor from '../models/Doctor.js';
 import { jwtSecret } from '../config.js';
+import { authMiddleware } from './middleware.js';
 
 const router = express.Router();
 const storage = multer.memoryStorage();
@@ -81,42 +82,50 @@ router.put('/:username', upload.single('image'), async (req, res) => {
         res.status(500).send({ message: 'Error updating user' });
     }
 });
-// Assuming you have a route to create appointments
-router.post('/appointments', async (req, res) => {
-    try {
-      const { patientName, email, phone, doctor, date, time } = req.body;
-  
-      const newAppointment = new Appointment({
-        patientName,
-        email,
-        phone,
-        doctor,
-        date,
-        time,
-      });
-  
-      await newAppointment.save();
-      res.status(200).send({ message: 'Appointment booked successfully!' });
-    } catch (error) {
-      console.error("Error booking appointment:", error);
-      res.status(500).send({ message: 'Error booking appointment' });
-    }
-  });
 
-// In your routes for appointments
-
-// Get appointments for a specific user
-router.get('/:userId/appointments', async (req, res) => {
+// Book Appointment route (with user authentication)
+router.post('/appointments', authMiddleware, async (req, res) => {
     try {
-        const appointments = await Appointment.find({ userId: req.params.userId })
-            .populate('doctorId', 'name specialty') // Populate doctor details
-            .exec();
-        
-        res.json(appointments);
+        const { doctorName, specialty, location, fees, patientName, email, phone, date, time } = req.body;
+        if (!doctorName || !specialty || !location || !fees || !patientName || !email || !phone || !date || !time) {
+            return res.status(400).json({ error: 'All fields are required.' });
+        }
+
+        const username = req.user.username;
+        const appointment = new Appointment({
+            username,
+            doctorName,
+            specialty,
+            location,
+            fees,
+            patientName,
+            email,
+            phone,
+            date,
+            time,
+        });
+
+        await appointment.save();
+        res.status(200).json({ message: 'Appointment booked successfully', appointment });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Error fetching appointments.' });
+        console.error('Error booking appointment:', error);
+        res.status(500).json({ error: 'Error booking appointment' });
     }
+});
+
+// Get appointments for the logged-in user
+router.get('/appointments', authMiddleware, async (req, res) => {
+  try {
+    const username = req.user.username; // Retrieve username from authenticated user
+
+    // Find appointments for the logged-in user
+    const appointments = await Appointment.find({ username }).exec();
+
+    res.status(200).json(appointments);
+  } catch (error) {
+    console.error('Error fetching appointments:', error);
+    res.status(500).json({ message: 'Error fetching appointments.' });
+  }
 });
 
 export default router;

@@ -1,6 +1,10 @@
 import mongoose from "mongoose";
 
 const appointmentSchema = new mongoose.Schema({
+  username:{
+    type: String,
+    required: true,
+  },
   patientName: {
     type: String,
     required: true,

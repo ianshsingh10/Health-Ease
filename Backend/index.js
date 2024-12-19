@@ -13,7 +13,6 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -56,40 +55,10 @@ app.post('/register', async (req, res) => {
     }
 });
 
-// Appointment booking route
-app.post('/appointments', async (req, res) => {
-  const { doctorName, specialty, location, fees, patientName, email, phone, date, time } = req.body;
-
-  // Check if all required fields are provided
-  if (!doctorName || !specialty || !location || !fees || !patientName || !email || !phone || !date || !time) {
-    return res.status(400).json({ error: 'All fields are required.' });
-  }
-
-  try {
-    // Create the appointment
-    const appointment = new Appointment({
-      doctorName,
-      specialty,
-      location,
-      fees,
-      patientName,
-      email,
-      phone,
-      date,
-      time,
-    });
-
-    await appointment.save();
-    res.status(200).json({ message: 'Appointment booked successfully', appointment });
-  } catch (error) {
-    console.error('Error booking appointment:', error);
-    res.status(500).json({ error: 'Error booking appointment' });
-  }
-});
 
 // User and Doctor routes
 app.use('/api/users', userRoutes);
-app.use('/api/doctors', doctorRoutes);  // Adding doctor routes
+app.use('/api/doctors', doctorRoutes);
 
 // Connect to the database
 mongoose.connect(database)

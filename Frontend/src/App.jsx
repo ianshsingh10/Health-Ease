@@ -9,8 +9,8 @@ import ProfilePage from './components/ProfilePage';
 import AboutUs from './components/AboutUs';
 import AmbulanceService from './components/AmbulanceService'; // Import the AmbulanceService component
 import ContactUs from './components/ContactUs'; // Import the ContactUs component
-import AppointmentPage from './components/AppointmentsPage';
-import OnlineConsultation from './components/OnlineConsultation';
+import AppointmentPage from './components/AppointmentsPage'; // Import the Appointment component
+import OnlineConsultation from './components/OnlineConsultation'; // Import the OnlineConsultation component
 import BloodDonationPage from './components/BloodDonationPage'; // Import the BloodDonationPage component
 import ArticlesPage from './components/ArticlesPage'; // Import the ArticlesPage component
 
