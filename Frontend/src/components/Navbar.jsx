@@ -105,6 +105,14 @@ function Navbar({ isLoggedIn, username, setIsLoggedIn, setUsername }) {
             APPOINTMENT
           </NavLink>
           <NavLink
+            to="/articles"
+            className={({ isActive }) =>
+              isActive ? "text-blue-600" : "hover:text-blue-500"
+            }
+          >
+            ARTICLES
+          </NavLink>
+          <NavLink
             to="/contact"
             className={({ isActive }) =>
               isActive ? "text-blue-600" : "hover:text-blue-500"

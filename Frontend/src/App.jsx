@@ -7,10 +7,12 @@ import Login from './components/Login';
 import Register from './components/Register';
 import ProfilePage from './components/ProfilePage';
 import AboutUs from './components/AboutUs';
-import OnlineConsultation from './components/OnlineConsultation';
 import AmbulanceService from './components/AmbulanceService'; // Import the AmbulanceService component
 import ContactUs from './components/ContactUs'; // Import the ContactUs component
 import AppointmentPage from './components/AppointmentsPage';
+import OnlineConsultation from './components/OnlineConsultation';
+import BloodDonationPage from './components/BloodDonationPage'; // Import the BloodDonationPage component
+import ArticlesPage from './components/ArticlesPage'; // Import the ArticlesPage component
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -37,7 +39,9 @@ function App() {
                 <Route path="/services" element={<Services />} />
                 <Route path="/services/ambulance" element={<AmbulanceService />} /> {/* Ambulance Service Route */}
                 <Route path="/services/consultation" element={<OnlineConsultation />}/> {/* Online Consultation Route */}
-                <Route path="/contact" element={<ContactUs />} /> {/* Contact Us Route */}
+                <Route path="/services/blood-bank" element={<BloodDonationPage />} /> {/* Blood Donation route */}
+                <Route path="/articles" element={<ArticlesPage />} /> {/* Articles Page route */}
+                <Route path="/contact" element={<ContactUs />} /> {/* Contact Us Route */}        
                 <Route path="/profile/:username" element={<ProfilePage />} />
             </Routes>
         </div>
