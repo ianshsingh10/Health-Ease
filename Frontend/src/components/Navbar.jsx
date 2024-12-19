@@ -6,12 +6,17 @@ function Navbar() {
   const [showDropdown, setShowDropdown] = useState(false);
 
   return (
-    <nav className="fixed top-0 w-[100vw] z-[5]">
+    <nav className="fixed top-0 w-full z-10">
       {/* Top Spacer */}
       <div className="h-[3vmin] bg-white"></div>
 
-      {/* Navbar */}
-      <div className="h-[8vh] bg-[#F3F3F3] flex items-center justify-between p-[2vmin] pl-[5vmin] pr-[5vmin]">
+      {/* Navbar with background image */}
+      <div
+        className="h-[8vh] bg-cover bg-center flex items-center justify-between p-[2vmin] pl-[5vmin] pr-[5vmin]"
+        style={{
+          backgroundImage: 'url("/images/your-background-image.jpg")', // Reference image from the public folder
+        }}
+      >
         {/* Logo Section */}
         <div className="flex items-center gap-[1vmin]">
           <img src="/logo.png" alt="Health Ease Logo" className="w-12 h-12 mr-2" />
@@ -63,14 +68,14 @@ function Navbar() {
                     className="px-[2vmin] py-[1vmin] hover:bg-gray-200 flex items-center gap-[1vmin]"
                   >
                     <FaStethoscope />
-                    <Link to="/services/consultation">Online Consultation</Link>
+                    <Link to="/services/online-consultation">Online Consultation</Link>
                   </li>
                   <li
                     onClick={() => setShowDropdown(false)} // Close the dropdown
                     className="px-[2vmin] py-[1vmin] hover:bg-gray-200 flex items-center gap-[1vmin]"
                   >
                     <FaAmbulance />
-                    <Link to="/services/ambulance">Ambulance Services</Link> {/* Ensure this route points to the correct AmbulanceServices component */}
+                    <Link to="/services/ambulance">Ambulance Services</Link>
                   </li>
                   <li
                     onClick={() => setShowDropdown(false)} // Close the dropdown
@@ -105,6 +110,7 @@ function Navbar() {
             )}
           </div>
 
+          {/* Articles Page Link */}
           <NavLink
             to="/articles"
             className={({ isActive }) =>
@@ -113,6 +119,8 @@ function Navbar() {
           >
             ARTICLES
           </NavLink>
+
+          {/* Medicines Page Placeholder */}
           <NavLink
             to="/medicines"
             className={({ isActive }) =>
@@ -121,6 +129,7 @@ function Navbar() {
           >
             MEDICINES
           </NavLink>
+
           <NavLink
             to="/contact"
             className={({ isActive }) =>

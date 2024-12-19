@@ -1,102 +1,53 @@
-import React, { useState } from "react";
+import React from 'react';
+import imagePath from '../images/ai-healthcare-desktop.webp'; // Adjusted relative path
 
-function AppointmentsPage() {
-  const [formData, setFormData] = useState({
-    email: "",
-    phone: "",
-    date: "",
-    searchQuery: "",
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    alert(`Appointment booked successfully!\n${JSON.stringify(formData)}`);
-  };
-
+function OnlineConsultation() {
   return (
-    <div className="flex flex-col lg:flex-row items-center justify-between p-8 bg-white min-h-screen">
-      {/* Left Content */}
-      <div className="lg:w-1/2 text-left space-y-6">
-        <h1 className="text-4xl font-bold leading-tight">
-          Book your <span className="text-blue-500">virtual</span> appointment
-        </h1>
-        <p className="text-gray-600">
-          Being in the healthcare sector, we ensure the safety of our patients
-          and provide timely medical care. Get in touch with our expert team.
-        </p>
-
-        {/* Search Box */}
-        <div className="relative flex items-center">
-          <input
-            type="text"
-            name="searchQuery"
-            placeholder="Search Doctors in your location"
-            value={formData.searchQuery}
-            onChange={handleChange}
-            className="w-full p-3 border border-gray-300 rounded-lg"
-          />
-          <button className="absolute right-2 bg-blue-500 text-white p-2 rounded-lg">
-            🔍
-          </button>
-        </div>
-
-        {/* Appointment Form */}
-        <form onSubmit={handleSubmit} className="bg-gray-100 p-6 rounded-lg">
-          <h3 className="text-2xl font-semibold mb-4">
-            Easily book an appointment
-          </h3>
-          <div className="space-y-4">
-            <input
-              type="email"
-              name="email"
-              placeholder="Enter Email Address"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              className="w-full p-3 border border-gray-300 rounded-lg"
-            />
-            <input
-              type="text"
-              name="phone"
-              placeholder="Enter Contact Number"
-              value={formData.phone}
-              onChange={handleChange}
-              required
-              className="w-full p-3 border border-gray-300 rounded-lg"
-            />
-            <input
-              type="date"
-              name="date"
-              value={formData.date}
-              onChange={handleChange}
-              required
-              className="w-full p-3 border border-gray-300 rounded-lg"
-            />
-            <button
-              type="submit"
-              className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600"
-            >
-              Book Now
-            </button>
-          </div>
-        </form>
-      </div>
-
-      {/* Right Side Image */}
-      <div className="lg:w-1/2 mt-8 lg:mt-0 flex justify-center">
-        <img
-          src="/doctor.png" /* Place this image in 'public' or 'assets' folder */
-          alt="Doctor"
-          className="w-full max-w-sm object-cover"
+    <div
+      style={{
+        backgroundImage: `url(${imagePath})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed', // Fixes the background during scrolling
+        height: '100vh', // Ensures the container takes full viewport height
+      }}
+      className="flex flex-col items-center justify-center text-center p-8"
+    >
+      <h1 className="text-4xl font-bold text-[#0095DE]">Book Your Virtual Appointment</h1>
+      <p className="mt-4 text-lg text-gray-600">
+        Being in the healthcare sector, we consider it our paradigm duty to ensure the safety of our
+        patients, transparency in our practices, and absolute timely care.
+      </p>
+      <h2 className="mt-8 text-3xl font-semibold text-[#333333]">
+        Get Expert <span className="text-[#0095DE]">Medical Consultation!</span>
+      </h2>
+      <p className="mt-4 text-gray-600">
+        Our doctors provide expert medical advice and consultation. Get in touch with our team to
+        discuss.
+      </p>
+      <div className="mt-6">
+        <input
+          type="text"
+          placeholder="Search Doctors in your location"
+          className="border rounded-md p-2 w-[300px] focus:outline-none"
         />
+        <button className="ml-2 bg-[#0095DE] text-white px-4 py-2 rounded-md">
+          Search
+        </button>
+      </div>
+      <div className="mt-12 bg-white p-4 rounded-md shadow-md w-[80%] max-w-[600px]">
+        <p className="font-semibold">Easily book an appointment in 3 simple steps:</p>
+        <ol className="mt-4 list-decimal list-inside text-left">
+          <li>Enter your details</li>
+          <li>Select a time slot</li>
+          <li>Confirm your appointment</li>
+        </ol>
+        <button className="mt-4 bg-[#0095DE] text-white px-6 py-2 rounded-md hover:bg-[#007bbd]">
+          Book Now
+        </button>
       </div>
     </div>
   );
 }
 
-export default AppointmentPage;
+export default OnlineConsultation;
