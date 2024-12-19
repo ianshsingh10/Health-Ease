@@ -13,14 +13,13 @@ function AppointmentPage() {
     email: '',
     phone: '',
   });
-  const [searchLocation, setSearchLocation] = useState(''); // State for search filter
+  const [searchTerm, setSearchTerm] = useState(''); // Single state for combined search
 
   useEffect(() => {
     // Fetch doctor details when component mounts
     const fetchDoctors = async () => {
       try {
         const response = await axios.get('http://localhost:5000/api/doctors');
-        console.log(response.data); // Check doctor data
         setDoctors(response.data); // Set doctors in state
         setFilteredDoctors(response.data); // Initialize filtered doctors with all doctors
       } catch (error) {
@@ -33,12 +32,13 @@ function AppointmentPage() {
   }, []);
 
   useEffect(() => {
-    // Filter doctors based on location search term
+    // Filter doctors based on the combined search term
     const filtered = doctors.filter((doctor) =>
-      doctor.location.toLowerCase().includes(searchLocation.toLowerCase())
+      doctor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      doctor.location.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredDoctors(filtered);
-  }, [searchLocation, doctors]); // Re-run the filter when searchLocation or doctors change
+  }, [searchTerm, doctors]); // Re-run the filter when searchTerm or doctors change
 
   const handleBookClick = (doctor) => {
     setFormData({ ...formData, doctor }); // Store doctor in formData for booking
@@ -57,17 +57,16 @@ function AppointmentPage() {
       patientName: formData.patientName,
       email: formData.email,
       phone: formData.phone,
-      doctorName: formData.doctor.name,  // Ensure doctor name is included
+      doctorName: formData.doctor.name, // Ensure doctor name is included
       specialty: formData.doctor.specialty, // Include specialty
       location: formData.doctor.location, // Include location
       fees: formData.doctor.fees, // Include doctor's fees
       date: formData.date,
-      time: formData.time
+      time: formData.time,
     };
 
     try {
       const response = await axios.post('http://localhost:5000/appointments', appointmentData);
-      console.log(response.data);
       alert('Appointment booked successfully');
       setIsBooking(false); // Close modal after successful booking
     } catch (error) {
@@ -79,14 +78,14 @@ function AppointmentPage() {
   return (
     <div className="p-6 mt-[10vmin]">
       <h1 className="text-3xl font-bold text-center mb-6">Select a Doctor</h1>
-      
-      {/* Search Bar for Location */}
+
+      {/* Combined Search Bar */}
       <div className="mb-6">
         <input
           type="text"
-          value={searchLocation}
-          onChange={(e) => setSearchLocation(e.target.value)} // Update search term
-          placeholder="Search by Location"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)} // Update search term
+          placeholder="Search by Doctor Name or Location"
           className="w-full p-2 border rounded-md"
         />
       </div>
@@ -107,7 +106,7 @@ function AppointmentPage() {
             </div>
           ))
         ) : (
-          <p>No doctors found for the selected location</p>
+          <p>No doctors found for the selected criteria</p>
         )}
       </div>
 
