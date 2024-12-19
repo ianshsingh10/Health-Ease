@@ -15,6 +15,8 @@ import BloodDonationPage from './components/BloodDonationPage'; // Import the Bl
 import ArticlesPage from './components/ArticlesPage'; // Import the ArticlesPage component
 import MedicineOrder from './components/MedicineOrder';
 import AddressPage from './components/AddressPage';
+import CheckupList from './components/CheckupList'; 
+import BookingForm from './components/BookingForm';
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -47,6 +49,8 @@ function App() {
                 <Route path="/profile/:username" element={<ProfilePage />} />
                 <Route path="/MedicineOrder" element={<MedicineOrder />} />
                 <Route path="/address" element={<AddressPage />} />
+                <Route path="/services/checkup" element={<CheckupList />} />
+                <Route path="/book/:checkupId" element={<BookingForm />} />
             </Routes>
         </div>
     );
