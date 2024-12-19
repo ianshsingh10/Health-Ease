@@ -78,9 +78,10 @@ function OnlineConsultation() {
         },
       });
       setResponseMessage(response.data.message);
+      alert('Appointment booked successfully');
     } catch (error) {
       console.error(error);
-      setResponseMessage('Error booking the appointment. Please try again.');
+      alert('Error booking the appointment. Please try again.');
     }
   };
 
@@ -209,9 +210,9 @@ function OnlineConsultation() {
           </form>
         </div>
 
-        {responseMessage && (
-          <div className="mt-6 text-xl text-center text-green-600 font-semibold">{responseMessage}</div>
-        )}
+        {/* {responseMessage && (
+          alert(responseMessage)
+        )} */}
       </div>
     </div>
   );

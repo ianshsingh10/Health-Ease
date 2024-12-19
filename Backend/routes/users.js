@@ -155,5 +155,19 @@ router.post('/book-appointment',authMiddleware, async (req, res) => {
       res.status(500).send({ message: 'Error booking appointment.' });
     }
   });
+  
+  router.get('/virtual-appointments/:username', async (req, res) => {
+    try {
+        const username = req.params.username; // Retrieve username from authenticated user
+
+        // Find appointments for the logged-in user
+        const appointments = await Consultance.find({ username }).exec();
+
+        res.status(200).json(appointments);
+    } catch (error) {
+        console.error('Error fetching appointments:', error);
+        res.status(500).json({ message: 'Error fetching appointments.' });
+    }
+});
 
 export default router;

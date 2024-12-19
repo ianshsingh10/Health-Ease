@@ -17,6 +17,7 @@ const PatientProfilePage = () => {
     const { username } = useParams();
     const [userData, setUserData] = useState(null);
     const [appointments, setAppointments] = useState([]);
+    const [virtualAppointments, setVirtualAppointments] = useState([]); // Virtual appointments state
     const [isEditing, setIsEditing] = useState(false);
     const [updatedData, setUpdatedData] = useState({
         username: '',
@@ -52,8 +53,18 @@ const PatientProfilePage = () => {
             }
         };
 
+        const fetchVirtualAppointments = async () => {
+            try {
+                const response = await axios.get(`http://localhost:5000/api/users/virtual-appointments/${username}`);
+                setVirtualAppointments(response.data); // Set virtual appointments data
+            } catch (error) {
+                console.error('Error fetching virtual appointments:', error);
+            }
+        };
+
         fetchUserData();
         fetchUserAppointments();
+        fetchVirtualAppointments(); // Fetch virtual appointments data
     }, [username]);
 
     const handleInputChange = (e) => {
@@ -68,7 +79,6 @@ const PatientProfilePage = () => {
     const handleUpdateSubmit = async (e) => {
         e.preventDefault();
         const formData = new FormData();
-        formData.append('username', updatedData.username);
         formData.append('dob', updatedData.dob);
         formData.append('medicalHistory', updatedData.medicalHistory);
         formData.append('bloodGroup', updatedData.bloodGroup);
@@ -110,16 +120,6 @@ const PatientProfilePage = () => {
             <div className="bg-white shadow-lg rounded-lg p-8 mb-8">
                 {isEditing ? (
                     <form onSubmit={handleUpdateSubmit}>
-                        <div className="mb-4">
-                            <label className="block text-gray-700">Username</label>
-                            <input
-                                type="text"
-                                name="username"
-                                value={updatedData.username}
-                                onChange={handleInputChange}
-                                className="w-full p-2 border border-gray-300 rounded"
-                            />
-                        </div>
                         <div className="mb-4">
                             <label className="block text-gray-700">Date of Birth</label>
                             <input
@@ -189,7 +189,7 @@ const PatientProfilePage = () => {
                 )}
             </div>
 
-            <div className="bg-white shadow-lg rounded-lg p-8">
+            <div className="bg-white shadow-lg rounded-lg p-8 mb-8">
                 <h2 className="text-3xl font-semibold mb-6">Appointments</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {appointments.length > 0 ? (
@@ -222,6 +222,38 @@ const PatientProfilePage = () => {
                         ))
                     ) : (
                         <p className="text-gray-600">No appointments found.</p>
+                    )}
+                </div>
+            </div>
+
+            {/* Virtual Appointments Section */}
+            <div className="bg-white shadow-lg rounded-lg p-8">
+                <h2 className="text-3xl font-semibold mb-6">Virtual Appointments</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {virtualAppointments.length > 0 ? (
+                        virtualAppointments.map((virtualAppointment, index) => (
+                            <div
+                                key={index}
+                                className="border border-gray-200 rounded-lg shadow-md p-6 flex flex-col justify-between"
+                            >
+                                <div>
+                                    <h3 className="text-lg font-bold mb-2">
+                                        {virtualAppointment.doctorName}
+                                    </h3>
+                                    <p className="text-gray-600">
+                                        <strong>Date:</strong> {virtualAppointment.date}
+                                    </p>
+                                    <p className="text-gray-600">
+                                        <strong>Time:</strong> {virtualAppointment.time}
+                                    </p>
+                                    <p className="text-gray-600">
+                                        <strong>Consultation Link:</strong> <a href={virtualAppointment.link} className="text-blue-500" target="_blank" rel="noopener noreferrer">Join here</a>
+                                    </p>
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        <p className="text-gray-600">No virtual appointments found.</p>
                     )}
                 </div>
             </div>

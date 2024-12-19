@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
 const consultationSchema = new mongoose.Schema({
-    username:String,
-    name: String,
-    email: String,
-    location: String,
-    doctorName: String,
-    date: String,
-    time: String,
-    symptoms: String,
+    username: { type: String, required: true },
+    name:  { type: String, required: true },
+    email:  { type: String, required: true },
+    location:  { type: String, required: true },
+    doctorName:  { type: String, required: true },
+    date:  { type: String, required: true },
+    time:  { type: String, required: true },
+    symptoms:  { type: String, required: true },
   });
 
 const Consult = mongoose.model('Consult', consultationSchema);
