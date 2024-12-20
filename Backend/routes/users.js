@@ -9,6 +9,7 @@ import Doctor from '../models/Doctor.js';
 import { jwtSecret } from '../config.js';
 import { authMiddleware } from './middleware.js';
 import Consult from '../models/Consultation.js';
+import AmbulanceRequest from '../models/Ambulance.js';
 
 const router = express.Router();
 const storage = multer.memoryStorage();
@@ -169,5 +170,24 @@ router.post('/book-appointment',authMiddleware, async (req, res) => {
         res.status(500).json({ message: 'Error fetching appointments.' });
     }
 });
+
+router.post("/ambulance", async (req, res) => {
+    const { latitude, longitude, manualLocation } = req.body;
+  
+    try {
+      // Save location to the database (assuming a MongoDB setup)
+      const request = new AmbulanceRequest({
+        latitude,
+        longitude,
+        manualLocation,
+        requestedAt: new Date(),
+      });
+      await request.save();
+      res.status(201).json({ message: "Ambulance request saved successfully" });
+    } catch (error) {
+      console.error("Error saving ambulance request:", error);
+      res.status(500).json({ message: "Failed to save request" });
+    }
+  });
 
 export default router;

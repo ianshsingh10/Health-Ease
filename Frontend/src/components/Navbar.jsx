@@ -89,13 +89,6 @@ function Navbar({ isLoggedIn, username, setIsLoggedIn, setUsername }) {
                             onClick={() => setShowDropdown(false)} // Close the dropdown
                             className="px-[2vmin] py-[1vmin] hover:bg-gray-200 flex items-center gap-[1vmin]"
                         >
-                            <FaDollarSign />
-                            <Link to="/services/cost-estimation">Healthcare Cost Estimation</Link>
-                        </li>
-                        <li
-                            onClick={() => setShowDropdown(false)} // Close the dropdown
-                            className="px-[2vmin] py-[1vmin] hover:bg-gray-200 flex items-center gap-[1vmin]"
-                        >
                             <FaTint />
                             <Link to="/services/blood-bank">Blood Bank</Link>
                         </li>

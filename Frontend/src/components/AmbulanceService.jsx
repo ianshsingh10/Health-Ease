@@ -1,8 +1,51 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
 import ambulanceImage from "../images/ambulance.png.jpg"; // Background image
 import ambulanceMain from "../images/ambulance-main.png.png"; // Ambulance image for left box
 
 function AmbulanceService() {
+  const [location, setLocation] = useState({ latitude: null, longitude: null });
+  const [manualLocation, setManualLocation] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleGetLocation = () => {
+    if (navigator.geolocation) {
+      setLoading(true);
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLocation({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+          setLoading(false);
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+          alert("Unable to fetch location. Please enter it manually.");
+          setLoading(false);
+        }
+      );
+    } else {
+      alert("Geolocation is not supported by your browser.");
+    }
+  };
+
+  const handleSubmit = async () => {
+    const data = {
+      latitude: location.latitude,
+      longitude: location.longitude,
+      manualLocation: manualLocation || null,
+    };
+
+    try {
+      const response = await axios.post("http://localhost:5000/api/users/ambulance", data);
+      alert("Ambulance request submitted successfully!");
+    } catch (error) {
+      console.error("Error saving location:", error);
+      alert("Failed to submit the ambulance request. Please try again.");
+    }
+  };
+
   return (
     <div
       className="relative w-full min-h-screen bg-cover bg-center"
@@ -54,13 +97,40 @@ function AmbulanceService() {
               </p>
             </div>
 
+            {/* Location Input */}
+            <div className="mt-[2vmin]">
+              {location.latitude && location.longitude ? (
+                <p className="text-green-500">
+                  Location fetched: Latitude {location.latitude}, Longitude {location.longitude}
+                </p>
+              ) : (
+                <button
+                  onClick={handleGetLocation}
+                  className="w-full p-[1vmin] text-center rounded-md text-white bg-gradient-to-r from-[#A7E2FF] to-[#0095DE] hover:shadow-lg hover:scale-105 transition duration-300 ease-in-out"
+                >
+                  {loading ? "Fetching Location..." : "Use Current Location"}
+                </button>
+              )}
+
+              <div className="mt-4">
+                <input
+                  type="text"
+                  placeholder="Enter location manually (optional)"
+                  value={manualLocation}
+                  onChange={(e) => setManualLocation(e.target.value)}
+                  className="w-full p-[1vmin] border rounded-md"
+                />
+              </div>
+            </div>
+
             {/* Call to Action */}
             <div className="mt-[2vmin]">
-              <a href="#">
-                <div className="w-full p-[1vmin] text-center rounded-md text-white bg-gradient-to-r from-[#A7E2FF] to-[#0095DE] hover:shadow-lg hover:scale-105 transition duration-300 ease-in-out">
-                  Request an Ambulance Now
-                </div>
-              </a>
+              <button
+                onClick={handleSubmit}
+                className="w-full p-[1vmin] text-center rounded-md text-white bg-gradient-to-r from-[#A7E2FF] to-[#0095DE] hover:shadow-lg hover:scale-105 transition duration-300 ease-in-out"
+              >
+                Submit Request
+              </button>
             </div>
           </div>
         </div>
