@@ -7,16 +7,17 @@ import Login from './components/Login';
 import Register from './components/Register';
 import ProfilePage from './components/ProfilePage';
 import AboutUs from './components/AboutUs';
-import AmbulanceService from './components/AmbulanceService'; // Import the AmbulanceService component
-import ContactUs from './components/ContactUs'; // Import the ContactUs component
-import AppointmentPage from './components/AppointmentsPage'; // Import the Appointment component
-import OnlineConsultation from './components/OnlineConsultation'; // Import the OnlineConsultation component
-import BloodDonationPage from './components/BloodDonationPage'; // Import the BloodDonationPage component
-import ArticlesPage from './components/ArticlesPage'; // Import the ArticlesPage component
+import AmbulanceService from './components/AmbulanceService';
+import ContactUs from './components/ContactUs';
+import AppointmentPage from './components/AppointmentsPage';
+import OnlineConsultation from './components/OnlineConsultation';
+import BloodDonationPage from './components/BloodDonationPage';
+import ArticlesPage from './components/ArticlesPage';
 import MedicineOrder from './components/MedicineOrder';
 import AddressPage from './components/AddressPage';
-import CheckupList from './components/CheckupList'; 
+import CheckupList from './components/CheckupList';
 import BookingForm from './components/BookingForm';
+import BedAvailability from './components/BedAvailability'; // New import
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -39,13 +40,14 @@ function App() {
                 <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} setUsername={setUsername} />} />
                 <Route path="/about" element={<AboutUs />} />
                 <Route path="/register" element={<Register />} />
-                <Route path="/appointment" element={<AppointmentPage/>}/>
+                <Route path="/appointment" element={<AppointmentPage />} />
                 <Route path="/services" element={<Services />} />
-                <Route path="/services/ambulance" element={<AmbulanceService />} /> {/* Ambulance Service Route */}
-                <Route path="/services/consultation" element={<OnlineConsultation />}/> {/* Online Consultation Route */}
-                <Route path="/services/blood-bank" element={<BloodDonationPage />} /> {/* Blood Donation route */}
-                <Route path="/articles" element={<ArticlesPage />} /> {/* Articles Page route */}
-                <Route path="/contact" element={<ContactUs />} /> {/* Contact Us Route */}        
+                <Route path="/services/ambulance" element={<AmbulanceService />} />
+                <Route path="/services/consultation" element={<OnlineConsultation />} />
+                <Route path="/services/blood-bank" element={<BloodDonationPage />} />
+                <Route path="/services/beds" element={<BedAvailability />} /> {/* New BedAvailability route */}
+                <Route path="/articles" element={<ArticlesPage />} />
+                <Route path="/contact" element={<ContactUs />} />
                 <Route path="/profile/:username" element={<ProfilePage />} />
                 <Route path="/MedicineOrder" element={<MedicineOrder />} />
                 <Route path="/address" element={<AddressPage />} />
@@ -55,4 +57,5 @@ function App() {
         </div>
     );
 }
+
 export default App;
