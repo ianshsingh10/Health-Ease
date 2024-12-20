@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import imagePath from '../images/ai-healthcare-desktop.webp';
+import { useNavigate } from "react-router-dom";
 
 function OnlineConsultation() {
   const [formData, setFormData] = useState({
@@ -18,6 +19,7 @@ function OnlineConsultation() {
   const [filteredDoctors, setFilteredDoctors] = useState([]);
   const [locations, setLocations] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   // Fetch doctors data
   useEffect(() => {
@@ -70,7 +72,12 @@ function OnlineConsultation() {
     e.preventDefault();
   
     const token = localStorage.getItem('token'); // Or wherever you're storing the JWT token
-  
+
+    if (!token) {
+      navigate("/login"); // Redirect to login page
+      return;
+    }
+
     try {
       const response = await axios.post('http://localhost:5000/api/users/book-appointment', formData, {
         headers: {

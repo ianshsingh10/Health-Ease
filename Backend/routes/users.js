@@ -137,7 +137,7 @@ router.post('/book-appointment',authMiddleware, async (req, res) => {
       const { name, email, location, doctorName, date, time, symptoms } = req.body;
       const username = req.user.username;
       // Save the data into the database
-      const newConsultation = new Consultance({
+      const newConsultation = new Consult({
         username,
         name,
         email,

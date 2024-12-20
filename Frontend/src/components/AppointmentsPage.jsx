@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 
 function AppointmentPage() {
@@ -14,6 +15,7 @@ function AppointmentPage() {
     phone: '',
   });
   const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -65,6 +67,11 @@ function AppointmentPage() {
 
     try {
       const token = localStorage.getItem('token');
+      if (!token) {
+        navigate("/login"); // Redirect to login page
+        return;
+      }
+
       await axios.post('http://localhost:5000/api/users/appointments', appointmentData, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -72,7 +79,13 @@ function AppointmentPage() {
       setIsBooking(false);
     } catch (error) {
       console.error('Error booking appointment:', error);
-      alert('Error booking appointment');
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        alert('Your session has expired. Please log in again.');
+        localStorage.removeItem('token'); // Clear invalid token
+        navigate("/login"); // Redirect to login page
+      } else {
+        alert('Error booking appointment. Please try again.');
+      }
     }
   };
 
