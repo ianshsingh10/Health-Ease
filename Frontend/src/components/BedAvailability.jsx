@@ -1,20 +1,28 @@
 import React, { useState } from 'react';
-import bedImage from '../images/1140-hospital-room (1).webp'; // Updated image path
+import bedImage from '../images/1140-hospital-room.webp'; // Updated image path
 
 function BedAvailability() {
     const [selectedLocation, setSelectedLocation] = useState('');
     const [selectedBedType, setSelectedBedType] = useState('');
     const [filteredHospitals, setFilteredHospitals] = useState([]);
 
-    const locations = ['Location 1', 'Location 2', 'Location 3'];
-    const bedTypes = ['General Ward', 'Private Room', 'ICU'];
-
     const hospitalData = [
-        { name: 'Hospital A', location: 'Location 1', beds: ['General Ward', 'Private Room'] },
-        { name: 'Hospital B', location: 'Location 1', beds: ['ICU', 'Private Room'] },
-        { name: 'Hospital C', location: 'Location 2', beds: ['General Ward', 'ICU'] },
-        { name: 'Hospital D', location: 'Location 3', beds: ['General Ward', 'Private Room'] },
-        { name: 'Hospital E', location: 'Location 3', beds: ['ICU'] },
+        { name: 'Max Super Specialty Hospital', location: 'Noida', beds: ['ICU', 'NICU', 'General Ward'] },
+        { name: 'Max Super Specialty Hospital', location: 'Bangalore', beds: ['Cancer Care Unit', 'General Ward', 'Private Room'] },
+        { name: 'Narayana Health', location: 'Visakhapatnam', beds: ['General Ward', 'Private Room', 'ICU', 'NICU'] },
+        { name: 'Narayana Health', location: 'Delhi', beds: ['Emergency Room', 'Cancer Care Unit', 'NICU', 'ICU'] },
+        { name: 'Fortis Healthcare', location: 'Bhopal', beds: ['ICU', 'NICU'] },
+        { name: 'Artemis Hospital', location: 'Thane', beds: ['General Ward', 'ICU', 'Cancer Care Unit', 'Private Room'] },
+        { name: "Rainbow Children's Hospital", location: 'Chandigarh', beds: ['General Ward'] },
+        { name: 'SevenHills Hospital', location: 'Surat', beds: ['Cancer Care Unit', 'Emergency Room', 'NICU'] },
+        { name: 'BLK-Max Super Specialty Hospital', location: 'Bhopal', beds: ['Burn Unit', 'ICU'] },
+        { name: 'Sankara Nethralaya', location: 'Ahmedabad', beds: ['Cancer Care Unit'] },
+    ];
+
+    // Extract unique locations and bed types
+    const locations = [...new Set(hospitalData.map((hospital) => hospital.location))];
+    const bedTypes = [
+        ...new Set(hospitalData.flatMap((hospital) => hospital.beds)),
     ];
 
     const handleLocationChange = (e) => {
@@ -87,8 +95,8 @@ function BedAvailability() {
                     <div className="mt-6">
                         <h2 className="text-2xl font-bold mb-4">Hospitals with Available Beds</h2>
                         <ul className="list-disc list-inside">
-                            {filteredHospitals.map((hospital) => (
-                                <li key={hospital.name} className="text-lg">
+                            {filteredHospitals.map((hospital, index) => (
+                                <li key={index} className="text-lg">
                                     {hospital.name}
                                 </li>
                             ))}

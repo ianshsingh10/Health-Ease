@@ -5,7 +5,6 @@ import dotenv from 'dotenv';
 import userRoutes from './routes/users.js';
 import doctorRoutes from './routes/doctors.js';  // Assuming you have a route for doctors
 import User from './models/userModel.js';
-import Appointment from './models/Appointment.js';
 import bcrypt from 'bcrypt';
 import { database } from './config.js';
 
