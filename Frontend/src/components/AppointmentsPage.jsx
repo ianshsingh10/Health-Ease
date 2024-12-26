@@ -53,6 +53,7 @@ function AppointmentPage() {
     }
 
     const appointmentData = {
+      doctorId: formData.doctor._id,
       patientName: formData.patientName,
       email: formData.email,
       phone: formData.phone,
