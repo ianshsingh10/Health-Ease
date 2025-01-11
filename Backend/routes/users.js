@@ -5,7 +5,6 @@
     import User from '../models/userModel.js';
     import Appointment from '../models/Appointment.js';
     import Consultance from '../models/Consultation.js';
-    import Doctor from '../models/Doctor.js';
     import { jwtSecret } from '../config.js';
     import { authMiddleware } from './middleware.js';
     import Consult from '../models/Consultation.js';
@@ -48,6 +47,7 @@
             const user = await User.findOne({ username: req.params.username });
 
             if (!user) {
+                
                 return res.status(404).send({ message: 'User not found' });
             }
 
@@ -142,11 +142,12 @@
 
     router.post('/book-appointment',authMiddleware, async (req, res) => {
         try {
-        const { name, email, location, doctorName, date, time, symptoms } = req.body;
-        const username = req.user.username;
+        const { doctorId, name, email, location, doctorName, date, time, symptoms } = req.body;
+        const userId = req.user.id;
         // Save the data into the database
         const newConsultation = new Consult({
-            username,
+            userId,
+            doctorId,
             name,
             email,
             location,
@@ -166,12 +167,18 @@
     
     router.get('/virtual-appointments/:username', async (req, res) => {
         try {
-            const username = req.params.username; // Retrieve username from authenticated user
+            const { username } = req.params;
 
-            // Find appointments for the logged-in user
-            const appointments = await Consultance.find({ username }).exec();
+        // Find the user by username
+        const user = await User.findOne({ username });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found.' });
+        }
 
-            res.status(200).json(appointments);
+        // Fetch appointments using userId
+        const appointments = await Consultance.find({ userId: user._id });
+
+        res.status(200).json(appointments);
         } catch (error) {
             console.error('Error fetching appointments:', error);
             res.status(500).json({ message: 'Error fetching appointments.' });

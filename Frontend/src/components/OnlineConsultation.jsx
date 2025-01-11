@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import imagePath from '../images/ai-healthcare-desktop.webp';
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 function OnlineConsultation() {
   const [formData, setFormData] = useState({
@@ -9,6 +9,7 @@ function OnlineConsultation() {
     email: '',
     location: '',
     doctorName: '',
+    doctorId: '', // Store doctorId here
     date: '',
     time: '',
     symptoms: '',
@@ -52,6 +53,14 @@ function OnlineConsultation() {
     if (name === 'location') {
       filterDoctors(value); // Filter doctors based on location
     }
+
+    // If doctorName changes, update doctorId and doctorName
+    if (name === 'doctorName') {
+      const selectedDoctor = doctors.find(doctor => doctor.name === value);
+      if (selectedDoctor) {
+        setFormData({ ...formData, doctorId: selectedDoctor._id, doctorName: selectedDoctor.name });
+      }
+    }
   };
 
   // Filter doctors based on location
@@ -70,11 +79,11 @@ function OnlineConsultation() {
   // Handle form submission
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-  
+
     const token = localStorage.getItem('token'); // Or wherever you're storing the JWT token
 
     if (!token) {
-      navigate("/login"); // Redirect to login page
+      navigate("/login"); // Redirect to login page if no token is found
       return;
     }
 
@@ -217,9 +226,6 @@ function OnlineConsultation() {
           </form>
         </div>
 
-        {/* {responseMessage && (
-          alert(responseMessage)
-        )} */}
       </div>
     </div>
   );
