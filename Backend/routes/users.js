@@ -202,6 +202,39 @@
         console.error("Error saving ambulance request:", error);
         res.status(500).json({ message: "Failed to save request" });
         }
-    });
+    }); 
 
-    export default router;
+// Save a chat message
+router.post('/save', async (req, res) => {
+    const { username, sender, content } = req.body;
+
+    try {
+        let chatHistory = await ChatHistory.findOne({ username });
+        if (!chatHistory) {
+            chatHistory = new ChatHistory({ username, messages: [] });
+        }
+        chatHistory.messages.push({ sender, content });
+        await chatHistory.save();
+
+        res.status(200).json({ message: 'Chat history saved successfully.' });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to save chat history.' });
+    }
+});
+
+// Retrieve chat history for a user
+router.get('/history/:username', async (req, res) => {
+    const { username } = req.params;
+
+    try {
+        const chatHistory = await ChatHistory.findOne({ username });
+        if (!chatHistory) {
+            return res.status(404).json({ message: 'No chat history found.' });
+        }
+        res.status(200).json(ch `atHistory.messages`);
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to retrieve chat history.' });
+    }
+});
+
+export default router;

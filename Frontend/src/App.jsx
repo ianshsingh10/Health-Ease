@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Landing from './components/Landing';
 import Services from './components/Services';
@@ -17,7 +17,7 @@ import MedicineOrder from './components/MedicineOrder';
 import AddressPage from './components/AddressPage';
 import CheckupList from './components/CheckupList';
 import BookingForm from './components/BookingForm';
-import BedAvailability from './components/BedAvailability'; // New import
+import BedAvailability from './components/BedAvailability';
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -32,9 +32,21 @@ function App() {
         }
     }, []);
 
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        setIsLoggedIn(false);
+        setUsername('');
+    };
+
     return (
         <div>
-            <Navbar isLoggedIn={isLoggedIn} username={username} setIsLoggedIn={setIsLoggedIn} setUsername={setUsername} />
+            <Navbar 
+                isLoggedIn={isLoggedIn} 
+                username={username} 
+                setIsLoggedIn={setIsLoggedIn} 
+                setUsername={setUsername} 
+                handleLogout={handleLogout} 
+            />
             <Routes>
                 <Route path="/" element={<Landing />} />
                 <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} setUsername={setUsername} />} />
@@ -45,10 +57,13 @@ function App() {
                 <Route path="/services/ambulance" element={<AmbulanceService />} />
                 <Route path="/services/consultation" element={<OnlineConsultation />} />
                 <Route path="/services/blood-bank" element={<BloodDonationPage />} />
-                <Route path="/services/beds" element={<BedAvailability />} /> {/* New BedAvailability route */}
+                <Route path="/services/beds" element={<BedAvailability />} />
                 <Route path="/articles" element={<ArticlesPage />} />
                 <Route path="/contact" element={<ContactUs />} />
-                <Route path="/profile/:username" element={<ProfilePage />} />
+                <Route 
+                    path="/profile/:username" 
+                    element={isLoggedIn ? <ProfilePage /> : <Navigate to="/login" />} 
+                />
                 <Route path="/MedicineOrder" element={<MedicineOrder />} />
                 <Route path="/address" element={<AddressPage />} />
                 <Route path="/services/checkup" element={<CheckupList />} />

@@ -10,7 +10,7 @@ const Login = ({ setIsLoggedIn, setUsername }) => {
     const handleLoginChange = (e) => {
         const { name, value } = e.target;
         setLoginData({ ...loginData, [name]: value });
-    };
+    };  
 
     const handleLoginSubmit = async (e) => {
         e.preventDefault();
